@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+/* hide scrollbar for chrome, safari and opera */
+textarea::-webkit-scrollbar {
+  display: none;
+}
+
+.App {
+  text-align: center;
+}
+
+.master-container {
+  height: 100vh;
+}
+
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+
+.navbar-brand {
+  font-size: 1.2em;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.padding {
+  padding: 1em;
+}
+
+.actions {
+  @apply flex bg-whiteSmoke text-center py-3 rounded-xl justify-center items-center flex-1 border border-platinum border-opacity-80;
+}
+
+.extra {
+  @apply w-44
+}
