@@ -1,20 +1,18 @@
-
 import './App.css';
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
-import Title from './components/title'
-import TArea from './components/textarea'
+import PrimaryP from './pages/primary';
+import KeyRPages from './pages/keyRequest';
 
 function App() {
   return (
-    <>
-      {/* Primary Container */}
-      <div className="h-screen w-screen bg-white flex flex-col justify-center items-center" id='master-container'>
-        <img src="/Users/siddharthasrivastava/Developer/ReactTuts/textutils/public/paper.png" className='absolute -z-10 object-fill' />
-        <Title />
-        <TArea />
-      </div>
-    </>
+    <Router>
+      <Routes >
 
+        <Route path="/" element={<KeyRPages />} />
+        <Route path="/primary/:key" element={<PrimaryP />} />
+      </Routes>
+    </Router>
   );
 }
 

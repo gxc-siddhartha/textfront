@@ -1,11 +1,15 @@
-import React, { useState, useSyncExternalStore } from 'react';
-import { motion } from "motion/react";
+import { gsap } from "gsap";
+import { ParentDivContext } from "../pages/primary";
+
+import React, { useRef, useEffect, useState, useContext } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import axios from 'axios';
 import Lottie from "lottie-react";     // Ensure the lottie-react package is installed
 import loader from "../assets/anims/loader.json";
 
 
-export default function Textarea() {
+export default function Textarea({ apiKey }) {
+    console.log("Received API Key:", apiKey);
     const [text, setText] = useState("");
     const [charLength, setCharLength] = useState(0);
     const [wordLength, setWordLength] = useState(0);
@@ -13,7 +17,53 @@ export default function Textarea() {
     const [isLoading, setLoading] = useState(false);
     const [summary, setSummary] = useState("");
 
+    const [showSummary, showSummaryVal] = useState(false);
+
     const [minRead, updateMin] = useState("");
+
+    const summaryRef = useRef(null);
+    const parentDivRef = useContext(ParentDivContext); // Access the parent container ref
+
+
+    useEffect(() => {
+
+        if (!isLoading && showSummary && summaryRef.current) {
+
+            // Fade-in animation: from top to bottom with no blur
+            gsap.fromTo(
+                summaryRef.current,
+                { opacity: 0, y: -30, filter: "blur(10px)" }, // Initial state
+                { opacity: 1, y: 0, filter: "blur(0px)", duration: 1, ease: "power2.out" } // Target state
+            );
+
+
+            // gsap.fromTo(parentDivRef.current, {
+            //     height: `${parentDivRef.current.offsetHeight}`, // Add the height of 
+            // }, {
+            //     height: `${parentDivRef.current.offsetHeight}`, // Add the height of the summary
+            //     duration: 1,
+            //     ease: "power2.out",
+            // });
+
+
+
+        } else if (isLoading && summaryRef.current) {
+            // gsap.fromTo(parentDivRef.current, {
+            //     height: `${parentDivRef.current.offsetHeight}`, // Add the height of 
+            // }, {
+            //     height: `${parentDivRef.current.offsetHeight - summaryHeight}`, // Add the height of the summary
+            //     duration: 1,
+            //     ease: "power2.out",
+            // });
+            // Fade-out animation when loading starts
+            gsap.fromTo(
+                summaryRef.current,
+                { opacity: 1, y: 0, filter: "blur(0px)" }, // Initial state
+                { opacity: 0, y: -30, filter: "blur(10px)", duration: 1, ease: "power2.out" } // Target state
+            );
+        }
+    }, [isLoading, showSummary]);
+
 
     const calculateReadingTime = (inputText) => {
         const words = inputText.trim().split(/\s+/); // Split text by spaces
@@ -59,6 +109,7 @@ export default function Textarea() {
     };
 
     const getSummaryFromGemini = async (text) => {
+        showSummaryVal(true);
         setSummary("");
         setLoading(true);
         const data = {
@@ -66,7 +117,7 @@ export default function Textarea() {
                 {
                     parts: [
                         {
-                            text: "Please provide a brief (under 150 words) summary of what this paragraph is saying and all the key points that we shouldn't miss here. The paragraph is " + text
+                            text: "Please provide a brief (under 50 words) summary of what this paragraph is saying and all the key points that we shouldn't miss here. The paragraph is " + text
                         }
                     ]
                 }
@@ -74,7 +125,7 @@ export default function Textarea() {
         };
 
         axios.post(
-            'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyA2DX1H2YgkZwJG6w1Y-Hw-1i3wz-5grd0',
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
             data,
             {
                 headers: {
@@ -113,7 +164,7 @@ export default function Textarea() {
 
                     <div className="flex place-content-end items-center py-2 px-2 gap-2">
                         <motion.div
-                            whileHover={{ scale: 1.01, }}
+                            whileHover={{ scale: 1.04, }}
                             whileTap={{ scale: 0.95 }}
 
                             onClick={() => convertToUpperCase()} // Pass as an arrow function
@@ -126,7 +177,7 @@ export default function Textarea() {
                             />
                         </motion.div>
                         <motion.div
-                            whileHover={{ scale: 1.01, }}
+                            whileHover={{ scale: 1.04, }}
                             whileTap={{ scale: 0.95 }}
 
                             onClick={() => convertToLowerCase()} // Pass as an arrow function
@@ -139,7 +190,7 @@ export default function Textarea() {
                             />
                         </motion.div>
                         <motion.div
-                            whileHover={{ scale: 1.01, }}
+                            whileHover={{ scale: 1.04, }}
                             whileTap={{ scale: 0.95 }}
 
                             onClick={() => setText("")} // Undo functionality
@@ -203,12 +254,21 @@ export default function Textarea() {
                     <p className='font-bold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent ml-1 tracking-tight'>AI</p>
                 </motion.div>
             }
-            {summary.length === 0 ? <p></p> : <div className='w-2/4 flex mt-4 flex-col'>
-                <h1 className='text-2xl font-bold tracking-tight mb-1'>Summary</h1>
-                <hr />
-                <p className='mt-1 text-pastelBlack opacity-85'>{summary}</p>
-            </div>}
 
+            <AnimatePresence>
+                {(showSummary ?
+                    <motion.div
+                        ref={summaryRef}
+                        key="summary-box"
+                        className="w-2/4 flex mt-4 flex-col"
+                    >
+                        <h1 className="text-2xl font-bold tracking-tight mb-1">Summary</h1>
+                        <hr />
+                        <p className="mt-1 text-pastelBlack opacity-85">{summary}</p>
+                    </motion.div>
+                    : null
+                )}
+            </AnimatePresence>
 
         </>
     );
