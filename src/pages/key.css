@@ -9,7 +9,7 @@
 }
 
 /* styles.css */
-@media (max-width: 1400px) {
+@media (max-width: 1200px) {
     #master-container {
       display: none; /* Hide all content for smaller screens */
     }
