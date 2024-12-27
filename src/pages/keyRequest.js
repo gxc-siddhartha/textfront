@@ -45,7 +45,7 @@ export default function KeyRequestPage() {
             <div className="flex opacity-75 flex-col items-center">
                 <h1 className="text-4xl font-extrabold tracking-tight">Authentication</h1>
                 <p className='text-center mt-2 opacity-60 w-2/3'>
-                    Please provide your ChatGPT API key so we can verify your access to the model in use.
+                    Please provide your Gemini API key so we can verify your access to the model in use.
                 </p>
                 <input value={api_key} onChange={handleApiKeyText} className='mt-3 w-2/3 bg-whiteSmoke rounded-xl border border-frenchGrey border-opacity-20 focus:outline-none p-3' type='text' />
                 <motion.button
