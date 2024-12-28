@@ -17,6 +17,8 @@ export default function Textarea({ apiKey }) {
     const [isLoading, setLoading] = useState(false);
     const [summary, setSummary] = useState("");
 
+    const [selectedLang, selectLang] = useState("English");
+
     const [showSummary, showSummaryVal] = useState(false);
 
     const [minRead, updateMin] = useState("");
@@ -24,6 +26,14 @@ export default function Textarea({ apiKey }) {
     const summaryRef = useRef(null);
     const parentDivRef = useContext(ParentDivContext); // Access the parent container ref
 
+
+    const handleLanguageEvent = async () => {
+        if (selectedLang === "English") {
+            selectLang("Hindi");
+        } else {
+            selectLang("English");
+        }
+    }
 
     useEffect(() => {
 
@@ -117,7 +127,8 @@ export default function Textarea({ apiKey }) {
                 {
                     parts: [
                         {
-                            text: "Please provide a brief (under 50 words) summary of what this paragraph is saying and all the key points that we shouldn't miss here. The paragraph is " + text
+
+                            text: (selectedLang === "English") ? "Please provide a brief (under 50 words) summary of what this paragraph is saying and all the key points that we shouldn't miss here. The paragraph is " + text : "Please provide a brief (under 50 words) summary of what this paragraph is saying and all the key points that we shouldn't miss here in hindi. The paragraph is " + text,
                         }
                     ]
                 }
@@ -254,6 +265,32 @@ export default function Textarea({ apiKey }) {
                     <p className='font-bold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent ml-1 tracking-tight'>AI</p>
                 </motion.div>
             }
+            <motion.div className="flex gap-3 mt-3 w-2/4" >
+                {selectedLang === "English" ? <>
+                    <motion.div className="actions" onClick={handleLanguageEvent} whileHover={{ scale: 1.03, opacity: '90%', cursor: 'pointer' }}
+                        whileTap={{ scale: 0.95 }}>
+                        <p className="font-medium mr-1 text-slate text-sm">हिन्दी</p>
+                    </motion.div>
+                    <motion.div className="actions "
+                    >
+                        <p className="font-bold mr-1 text-slate text-sm">English</p>
+                        <img src="https://img.icons8.com/emoji/512/check-mark-button-emoji.png" alt="" className="h-4 w-4" />
+                    </motion.div>
+                </> : <>
+                    <motion.div className="actions"
+                    >
+                        <p className="font-bold mr-1 text-slate text-sm">हिन्दी</p>
+                        <img src="https://img.icons8.com/emoji/512/check-mark-button-emoji.png" alt="" className="h-4 w-4" />
+                    </motion.div>
+                    <motion.div className="actions " onClick={handleLanguageEvent} whileHover={{ scale: 1.03, opacity: '90%', cursor: 'pointer' }}
+                        whileTap={{ scale: 0.95 }}>
+                        <p className="font-medium mr-1 text-slate text-sm">English</p>
+
+                    </motion.div>
+                </>}
+
+            </motion.div>
+
 
             <AnimatePresence>
                 {(showSummary ?
@@ -269,6 +306,7 @@ export default function Textarea({ apiKey }) {
                     : null
                 )}
             </AnimatePresence>
+
 
         </>
     );

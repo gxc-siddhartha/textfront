@@ -40,7 +40,7 @@ textarea::-webkit-scrollbar {
 }
 
 .actions {
-  @apply flex bg-whiteSmoke text-center py-3 rounded-xl justify-center items-center flex-1 border border-platinum border-opacity-80;
+  @apply flex bg-whiteSmoke text-center py-3 px-4 rounded-xl justify-center items-center flex-1 border border-platinum border-opacity-80; 
 }
 
 .extra {
